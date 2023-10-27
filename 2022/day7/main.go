@@ -14,11 +14,11 @@ type File struct {
 }
 
 type Directory struct {
-	name string
-	files []File
+	name           string
+	files          []File
 	subdirectories []Directory
-	parent *Directory
-	size int
+	parent         *Directory
+	size           int
 }
 
 func computeDirectorySize(directory Directory) int {
@@ -51,7 +51,7 @@ func main() {
 
 	words := strings.Split(string(dat), "\n")
 
-	root := Directory {name: "root"}
+	root := Directory{name: "root"}
 	current := &root
 	for _, word := range words {
 		if len(word) > 0 {
@@ -71,11 +71,11 @@ func main() {
 					}
 				}
 			} else if parts[0] == "dir" {
-				new_directory := Directory { name: parts[1], parent: current }
+				new_directory := Directory{name: parts[1], parent: current}
 				current.subdirectories = append(current.subdirectories, new_directory)
 			} else {
 				size, _ := strconv.Atoi(parts[0])
-				file := File { name: parts[1], size: size }
+				file := File{name: parts[1], size: size}
 				current.files = append(current.files, file)
 			}
 		}
@@ -93,7 +93,7 @@ func main() {
 
 	smallest_size := 100000000
 	for _, size := range dir_sizes {
-		if 70000000 - dir_sizes["/"] + size > 30000000 && size < smallest_size {
+		if 70000000-dir_sizes["/"]+size > 30000000 && size < smallest_size {
 			smallest_size = size
 		}
 	}

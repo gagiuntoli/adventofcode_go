@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 	"strconv"
+	"strings"
 	// "errors"
 )
 
@@ -41,10 +41,10 @@ func main() {
 			b2, _ := strconv.Atoi(pair2[1])
 
 			if pairsFullyOverlap(a1, a2, b1, b2) {
-				fully_overlaped_pairs += 1 
+				fully_overlaped_pairs += 1
 			}
 			if pairsOverlap(a1, a2, b1, b2) {
-				overlaped_pairs += 1 
+				overlaped_pairs += 1
 			}
 		}
 	}

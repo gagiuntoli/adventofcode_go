@@ -9,8 +9,8 @@ import (
 )
 
 func allDifferentCharacters(word string) bool {
-	for i:= 0; i < len(word)-1; i++ {
-		for j:= i+1; j < len(word); j++ {
+	for i := 0; i < len(word)-1; i++ {
+		for j := i + 1; j < len(word); j++ {
 			if word[i] == word[j] {
 				return false
 			}
@@ -21,7 +21,7 @@ func allDifferentCharacters(word string) bool {
 
 func findFirstMarkerPosition(line string, size int) int {
 	for i := size; i < len(line); i++ {
-		if allDifferentCharacters(line[i-size:i]) {
+		if allDifferentCharacters(line[i-size : i]) {
 			return i
 		}
 	}

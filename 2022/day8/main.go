@@ -12,7 +12,7 @@ import (
 
 func is_visible_right(heights []int, w int, h int, i int, j int) bool {
 	for k := j + 1; k < w; k++ {
-		if heights[w * i + k] >= heights[w * i + j] {
+		if heights[w*i+k] >= heights[w*i+j] {
 			return false
 		}
 	}
@@ -21,7 +21,7 @@ func is_visible_right(heights []int, w int, h int, i int, j int) bool {
 
 func is_visible_left(heights []int, w int, h int, i int, j int) bool {
 	for k := j - 1; k >= 0; k-- {
-		if heights[w * i + k] >= heights[w * i + j] {
+		if heights[w*i+k] >= heights[w*i+j] {
 			return false
 		}
 	}
@@ -30,7 +30,7 @@ func is_visible_left(heights []int, w int, h int, i int, j int) bool {
 
 func is_visible_top(heights []int, w int, h int, i int, j int) bool {
 	for k := i - 1; k >= 0; k-- {
-		if heights[w * k + j] >= heights[w * i + j] {
+		if heights[w*k+j] >= heights[w*i+j] {
 			return false
 		}
 	}
@@ -39,7 +39,7 @@ func is_visible_top(heights []int, w int, h int, i int, j int) bool {
 
 func is_visible_down(heights []int, w int, h int, i int, j int) bool {
 	for k := i + 1; k < h; k++ {
-		if heights[w * k + j] >= heights[w * i + j] {
+		if heights[w*k+j] >= heights[w*i+j] {
 			return false
 		}
 	}
@@ -78,7 +78,6 @@ func count_visible_trees_part(wg *sync.WaitGroup, heights []int, w int, h int, w
 	*result = count
 }
 
-
 /* This function was developed to test the Go concurrency only */
 func compute_max_visibility_part(wg *sync.WaitGroup, heights []int, w int, h int, w1 int, w2 int, h1 int, h2 int, result *int) {
 
@@ -101,7 +100,8 @@ func compute_max_visibility_part(wg *sync.WaitGroup, heights []int, w int, h int
 
 func visible_distance_right(heights []int, w int, h int, i int, j int) int {
 	k := j + 1
-	for ; k < w && heights[w * i + k] < heights[w * i + j]; k++ {}
+	for ; k < w && heights[w*i+k] < heights[w*i+j]; k++ {
+	}
 	if k == w {
 		return k - j - 1
 	} else {
@@ -111,7 +111,8 @@ func visible_distance_right(heights []int, w int, h int, i int, j int) int {
 
 func visible_distance_left(heights []int, w int, h int, i int, j int) int {
 	k := j - 1
-	for ; k >= 0 && heights[w * i + k] < heights[w * i + j]; k-- {}
+	for ; k >= 0 && heights[w*i+k] < heights[w*i+j]; k-- {
+	}
 	if k == -1 {
 		return j
 	} else {
@@ -121,7 +122,8 @@ func visible_distance_left(heights []int, w int, h int, i int, j int) int {
 
 func visible_distance_top(heights []int, w int, h int, i int, j int) int {
 	k := i - 1
-	for ; k >= 0 && heights[w * k + j] < heights[w * i + j]; k-- {}
+	for ; k >= 0 && heights[w*k+j] < heights[w*i+j]; k-- {
+	}
 	if k == -1 {
 		return i
 	} else {
@@ -131,7 +133,8 @@ func visible_distance_top(heights []int, w int, h int, i int, j int) int {
 
 func visible_distance_down(heights []int, w int, h int, i int, j int) int {
 	k := i + 1
-	for ; k < h && heights[w * k + j] < heights[w * i + j]; k++ {}
+	for ; k < h && heights[w*k+j] < heights[w*i+j]; k++ {
+	}
 	if k == h {
 		return k - i - 1
 	} else {
@@ -143,10 +146,10 @@ func compute_max_visibility(heights []int, w int, h int) int {
 	max_visibility := 0
 	for i := 0; i < h; i++ {
 		for j := 0; j < w; j++ {
-			product :=  visible_distance_top(heights, w, h, i, j) * 
-			visible_distance_down(heights, w, h, i, j) * 
-			visible_distance_right(heights, w, h, i, j) * 
-			visible_distance_left(heights, w, h, i, j)
+			product := visible_distance_top(heights, w, h, i, j) *
+				visible_distance_down(heights, w, h, i, j) *
+				visible_distance_right(heights, w, h, i, j) *
+				visible_distance_left(heights, w, h, i, j)
 
 			if product > max_visibility {
 				max_visibility = product
@@ -155,7 +158,6 @@ func compute_max_visibility(heights []int, w int, h int) int {
 	}
 	return max_visibility
 }
-
 
 func main() {
 	if len(os.Args) < 2 {
@@ -171,11 +173,11 @@ func main() {
 
 	h := len(words)
 	w := len(words[0])
-	heights := make([]int, h * w)
+	heights := make([]int, h*w)
 	for i, word := range words {
 		for j, val := range word {
 			ival, _ := strconv.Atoi(string(val))
-			heights[i * w + j] = ival
+			heights[i*w+j] = ival
 		}
 	}
 

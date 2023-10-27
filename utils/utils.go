@@ -1,5 +1,18 @@
 package utils
 
+func ArrayMin(arr []int) int {
+	if len(arr) == 0 {
+		return 0
+	}
+	minVal := arr[0]
+	for i := 1; i < len(arr); i++ {
+		if arr[i] < minVal {
+			minVal = arr[i]
+		}
+	}
+	return minVal
+}
+
 func ArrayMax(arr []int) int {
 	if len(arr) == 0 {
 		return 0

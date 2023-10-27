@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 	"strconv"
+	"strings"
+
+	utils "github.com/gagiuntoli/adventofcode_go/utils"
 )
 
 func findMinIndex(arr []int) int {
@@ -15,14 +17,6 @@ func findMinIndex(arr []int) int {
 		}
 	}
 	return index
-}
-
-func findArraySum(arr []int) int{
-	res := 0
-	for _, elem := range arr {
-		res += elem
-	}
-	return res
 }
 
 func main() {
@@ -56,5 +50,5 @@ func main() {
 		}
 	}
 	fmt.Println("solution 1:", max_calories)
-	fmt.Println("solution 2:", findArraySum(arr))
+	fmt.Println("solution 2:", utils.ArraySum(arr))
 }

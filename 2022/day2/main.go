@@ -6,7 +6,6 @@ import (
 	"strings"
 )
 
-
 func pointsOne(a byte, b byte) int {
 	if a == 'A' && b == 'X' { // Rock
 		return 1 + 3
@@ -39,7 +38,7 @@ func pointsTwo(a byte, b byte) int {
 		} else if b == 'Z' {
 			return 2 + 6
 		}
-	} else if a == 'B' { 
+	} else if a == 'B' {
 		if b == 'X' {
 			return 1 + 0
 		} else if b == 'Y' {

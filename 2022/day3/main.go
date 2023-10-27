@@ -1,10 +1,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
-	"errors"
 )
 
 func findRepeatedCharTwo(a string, b string) (byte, error) {

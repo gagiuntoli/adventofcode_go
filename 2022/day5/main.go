@@ -21,22 +21,22 @@ func main() {
 	words := strings.Split(string(dat), "\n")
 
 	stacks := [15][]byte{}
-	i:= 0
+	i := 0
 	for ; len(words[i]) > 0; i++ {
 		if strings.ContainsAny(words[i], "[") {
 			words[i] = strings.Replace(words[i], "[", " ", -1)
 			words[i] = strings.Replace(words[i], "]", " ", -1)
 			for j, w := range words[i] {
-				if (j - 1) % 4 == 0 {
+				if (j-1)%4 == 0 {
 					if w != ' ' {
-						stacks[(j - 1) / 4] = append(stacks[(j - 1) / 4], byte(w))
+						stacks[(j-1)/4] = append(stacks[(j-1)/4], byte(w))
 					}
 				}
 			}
 		}
 	}
 	for _, stack := range stacks {
-		slices.Reverse(stack)	
+		slices.Reverse(stack)
 	}
 
 	stacks1 := [15][]byte{}
@@ -60,8 +60,8 @@ func main() {
 			to, _ := strconv.Atoi(strings.Trim(numbers[2], " "))
 			from -= 1
 			to -= 1
-			stacks2[to] = append(stacks2[to], stacks2[from][len(stacks2[from]) - qty:]...)
-			stacks2[from] = stacks2[from][:len(stacks2[from]) - qty]
+			stacks2[to] = append(stacks2[to], stacks2[from][len(stacks2[from])-qty:]...)
+			stacks2[from] = stacks2[from][:len(stacks2[from])-qty]
 			for ; qty > 0; qty-- {
 				value := stacks1[from][len(stacks1[from])-1]
 				stacks1[from] = stacks1[from][:len(stacks1[from])-1]
