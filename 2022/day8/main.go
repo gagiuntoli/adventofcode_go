@@ -66,7 +66,7 @@ func count_visible_trees(heights []int, w int, h int) int {
 }
 
 func count_visible_trees_part(wg *sync.WaitGroup, heights []int, w int, h int, w1 int, w2 int, h1 int, h2 int, result *int) {
-	defer wg.Wait()
+	defer wg.Done() // we decrease the counter by 1 when this function finishes
 	count := 0
 	for i := h1; i < h2; i++ {
 		for j := w1; j < w2; j++ {
@@ -80,8 +80,7 @@ func count_visible_trees_part(wg *sync.WaitGroup, heights []int, w int, h int, w
 
 /* This function was developed to test the Go concurrency only */
 func compute_max_visibility_part(wg *sync.WaitGroup, heights []int, w int, h int, w1 int, w2 int, h1 int, h2 int, result *int) {
-
-	defer wg.Done()
+	defer wg.Done() // we decrease the counter by 1 when this function finishes
 	max_visibility := 0
 	for i := h1; i < h2; i++ {
 		for j := w1; j < w2; j++ {
@@ -185,13 +184,12 @@ func main() {
 	fmt.Println("solution 2:", compute_max_visibility(heights, w, h))
 
 	var wg sync.WaitGroup
-	jobs := 8
+	jobs := 1
 
+	wg.Add(jobs * 2) // We say to Go that jobs * 2 goroutines are going to be executed concurrently
 	results1 := make([]int, jobs)
-
 	results2 := make([]int, jobs)
 	for i := range results2 {
-		wg.Add(1)
 		h1 := 0
 		h2 := h
 		w1 := i * w / jobs
@@ -199,7 +197,7 @@ func main() {
 		go count_visible_trees_part(&wg, heights, w, h, w1, w2, h1, h2, &results1[i])
 		go compute_max_visibility_part(&wg, heights, w, h, w1, w2, h1, h2, &results2[i])
 	}
-	wg.Wait()
+	wg.Wait() // We wait until these jobs * 2 goroutines finish their execution
 
 	solution1 := utils.ArraySum(results1)
 	fmt.Println("solution 1 (parallel):", solution1)
