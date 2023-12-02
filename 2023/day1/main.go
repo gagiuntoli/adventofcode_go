@@ -24,7 +24,6 @@ func extractNumberPartA(word string) int {
 }
 
 func extractNumberPartB(word string) int {
-
 	digits := []string{"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 	lastDigit := 'a'
 	firstDigit := 'a'
