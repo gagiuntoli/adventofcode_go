@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"os"
+	"regexp"
 	"slices"
 	"strconv"
-	"math"
-	"regexp"
 	"strings"
 )
 

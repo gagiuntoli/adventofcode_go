@@ -20,7 +20,7 @@ func extractNumberPartA(word string) int {
 			}
 		}
 	}
-	return int(firstDigit) * 10 + int(lastDigit)
+	return int(firstDigit)*10 + int(lastDigit)
 }
 
 func extractNumberPartB(word string) int {
@@ -41,7 +41,7 @@ func extractNumberPartB(word string) int {
 			firstDigit = lastDigit
 		}
 	}
-	return int(firstDigit) * 10 + int(lastDigit)
+	return int(firstDigit)*10 + int(lastDigit)
 }
 
 func main() {

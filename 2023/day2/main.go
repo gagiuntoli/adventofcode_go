@@ -32,9 +32,9 @@ func is_valid_game_1(game string) (bool, int) {
 				val, _ := strconv.Atoi(values[i-1])
 				if color == "red" {
 					red += val
-				}else if color == "green" {
+				} else if color == "green" {
 					green += val
-				}else if color == "blue" {
+				} else if color == "blue" {
 					blue += val
 				}
 			}
@@ -51,7 +51,7 @@ func is_valid_game_1(game string) (bool, int) {
 		}
 		if !(red <= 12 && green <= 13 && blue <= 14) {
 			is_valid = false
-		} 
+		}
 	}
 	power := min_red * min_green * min_blue
 	return is_valid, power
@@ -76,7 +76,7 @@ func main() {
 		is_valid_game, power := is_valid_game_1(game)
 
 		if is_valid_game {
-			solution1 += i+1
+			solution1 += i + 1
 		}
 		solution2 += power
 	}

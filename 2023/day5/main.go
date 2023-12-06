@@ -10,11 +10,11 @@ import (
 )
 
 type Converter struct {
-	SrcName  string
-	DestName string
-	Destinations  []int
-	Sources       []int
-	Ranges        []int
+	SrcName      string
+	DestName     string
+	Destinations []int
+	Sources      []int
+	Ranges       []int
 }
 
 func parse_converter(str string) Converter {
@@ -37,12 +37,12 @@ func parse_converter(str string) Converter {
 		ranges = append(ranges, v2)
 	}
 
-	return Converter {
-		SrcName: src_name,
-		DestName: dest_name,
+	return Converter{
+		SrcName:      src_name,
+		DestName:     dest_name,
 		Destinations: destinations,
-		Sources: sources,
-		Ranges: ranges,
+		Sources:      sources,
+		Ranges:       ranges,
 	}
 }
 
@@ -54,7 +54,7 @@ func convert_1(converters []Converter, src string, seed int) (int, string) {
 		if converter.SrcName == src {
 			dest_name = converter.DestName
 			for i := 0; i < len(converter.Sources); i++ {
-				if converter.Sources[i] <= seed && seed <= converter.Sources[i] + converter.Ranges[i] {
+				if converter.Sources[i] <= seed && seed <= converter.Sources[i]+converter.Ranges[i] {
 					return converter.Destinations[i] + seed - converter.Sources[i], dest_name
 				}
 			}
@@ -69,7 +69,7 @@ func convert_2(converters []Converter, src string, seed int) (int, string) {
 		if converter.DestName == src {
 			src_name = converter.SrcName
 			for i := 0; i < len(converter.Destinations); i++ {
-				if converter.Destinations[i] <= seed && seed <= converter.Destinations[i] + converter.Ranges[i] {
+				if converter.Destinations[i] <= seed && seed <= converter.Destinations[i]+converter.Ranges[i] {
 					return converter.Sources[i] + seed - converter.Destinations[i], src_name
 				}
 			}
@@ -92,8 +92,8 @@ func find_dest(converters []Converter, source string, dest string, seed int, con
 }
 
 func belongs_to_seeds(seeds []int, seed int) bool {
-	for i := 0; i < len(seeds); i+=2 {
-		if seeds[i] <= seed && seed <= seeds[i] + seeds[i+1] {
+	for i := 0; i < len(seeds); i += 2 {
+		if seeds[i] <= seed && seed <= seeds[i]+seeds[i+1] {
 			return true
 		}
 	}
@@ -127,7 +127,7 @@ func main() {
 	var min_location int
 	for i, seed := range seeds {
 		val := find_dest(converters, "seed", "location", seed, convert_1)
-		if i == 0{
+		if i == 0 {
 			min_location = val
 		} else {
 			min_location = min(min_location, val)
@@ -155,7 +155,7 @@ func main() {
 	solution2 := -1
 	r := converters[len(converters)-1].Ranges[min_dest_index]
 	start := converters[len(converters)-1].Destinations[min_dest_index]
-	for i := start; i < start + r; i++ {
+	for i := start; i < start+r; i++ {
 		dest := find_dest(converters, "location", "seed", i, convert_2)
 		if belongs_to_seeds(seeds, dest) {
 			solution2 = i

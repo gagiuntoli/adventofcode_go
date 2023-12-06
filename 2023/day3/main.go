@@ -14,14 +14,14 @@ func has_adjacent_symbol(engine []string, i int, j int) bool {
 	positions := []struct {
 		i, j int
 	}{
-		{i+1, j},
-		{i+1, j+1},
-		{i+1, j-1},
-		{i, j+1},
-		{i, j-1},
-		{i-1, j},
-		{i-1, j+1},
-		{i-1, j-1},
+		{i + 1, j},
+		{i + 1, j + 1},
+		{i + 1, j - 1},
+		{i, j + 1},
+		{i, j - 1},
+		{i - 1, j},
+		{i - 1, j + 1},
+		{i - 1, j - 1},
 	}
 	for _, position := range positions {
 		i = position.i
@@ -38,7 +38,8 @@ func has_adjacent_symbol(engine []string, i int, j int) bool {
 func parse_number(line string, i int) (int, int) {
 	j := i
 
-	for ; j < len(line) && unicode.IsDigit(rune(line[j])); j++ {}
+	for ; j < len(line) && unicode.IsDigit(rune(line[j])); j++ {
+	}
 
 	if j == i {
 		return -1, -1
@@ -52,7 +53,7 @@ func compute_sum(engine []string) int {
 	sum := 0
 	for i, line := range engine {
 		j := 0
-		for ; j < len(line); {
+		for j < len(line) {
 			val, offset := parse_number(line, j)
 			if offset == -1 {
 				j++
@@ -85,7 +86,7 @@ func find_gears_sum(engine []string) int {
 	return sum
 }
 
-func find_numbers_in_positions(engine []string, positions []struct{i, j int}) []int {
+func find_numbers_in_positions(engine []string, positions []struct{ i, j int }) []int {
 	numbers := []int{}
 	for _, position := range positions {
 		ii := position.i
@@ -93,7 +94,8 @@ func find_numbers_in_positions(engine []string, positions []struct{i, j int}) []
 		if ii >= 0 && ii < len(engine) && jj >= 0 && jj < len(engine[0]) {
 			if unicode.IsDigit(rune(engine[ii][jj])) {
 				k := jj - 1
-				for ; k >= 0 && unicode.IsDigit(rune(engine[ii][k])); k-- {}
+				for ; k >= 0 && unicode.IsDigit(rune(engine[ii][k])); k-- {
+				}
 				k++
 
 				val, _ := parse_number(engine[ii], k)
@@ -109,28 +111,28 @@ func find_numbers_in_positions(engine []string, positions []struct{i, j int}) []
 func find_adjacent_numbers(engine []string, i int, j int) []int {
 	numbers := []int{}
 
-	positions := []struct { i, j int }{{i, j-1}, {i, j+1}}
+	positions := []struct{ i, j int }{{i, j - 1}, {i, j + 1}}
 
 	tmp := find_numbers_in_positions(engine, positions)
 	numbers = append(numbers, tmp...)
 
-	positions = []struct { i, j int }{{i+1, j}}
+	positions = []struct{ i, j int }{{i + 1, j}}
 
 	tmp = find_numbers_in_positions(engine, positions)
 	numbers = append(numbers, tmp...)
 
 	if len(tmp) == 0 {
-		positions = []struct { i, j int }{{i+1, j+1}, {i+1, j-1}}
+		positions = []struct{ i, j int }{{i + 1, j + 1}, {i + 1, j - 1}}
 		tmp = find_numbers_in_positions(engine, positions)
 		numbers = append(numbers, tmp...)
 	}
 
-	positions = []struct { i, j int }{{i-1, j}}
+	positions = []struct{ i, j int }{{i - 1, j}}
 
 	tmp = find_numbers_in_positions(engine, positions)
 	numbers = append(numbers, tmp...)
 	if len(tmp) == 0 {
-		positions = []struct { i, j int }{{i-1, j+1}, {i-1, j-1}}
+		positions = []struct{ i, j int }{{i - 1, j + 1}, {i - 1, j - 1}}
 		tmp = find_numbers_in_positions(engine, positions)
 		numbers = append(numbers, tmp...)
 	}
