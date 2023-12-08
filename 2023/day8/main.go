@@ -144,3 +144,4 @@ func main() {
 	fmt.Println("solution 1:", solution1)
 	fmt.Println("solution 2:", solution2)
 }
+
