@@ -41,6 +41,15 @@ func ArraySum(arr []int) int {
 	return sum
 }
 
+func All(array []int, value int) bool {
+	for _, val := range array {
+		if val != value {
+			return false
+		}
+	}
+	return true
+}
+
 // captureStdout calls a function f and returns its stdout side-effect as string
 func CaptureStdout(f func()) string {
 	// return to original state afterwards
