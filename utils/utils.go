@@ -7,6 +7,16 @@ import (
 	"io"
 )
 
+func AllEqual[T int](array []T) bool {
+	value := array[0]
+	for i:= 1; i < len(array); i++ {
+		if value != array[i] {
+			return false
+		}
+	}
+	return true
+}
+
 func ArrayMin(arr []int) int {
 	if len(arr) == 0 {
 		return 0
