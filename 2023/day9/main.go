@@ -12,7 +12,7 @@ import (
 func compute_difference(sequence []int) []int {
 	var difference []int
 	for i := 1; i < len(sequence); i++ {
-		difference = append(difference, sequence[i] - sequence[i-1])
+		difference = append(difference, sequence[i]-sequence[i-1])
 	}
 	return difference
 }
@@ -48,8 +48,8 @@ func find_first_element(sequence []int) int {
 		differences = compute_difference(differences)
 	}
 
-	for i := len(first_value_stack)-1; i > 0; i-- {
-		first_value_stack[i-1] -= first_value_stack[i]	
+	for i := len(first_value_stack) - 1; i > 0; i-- {
+		first_value_stack[i-1] -= first_value_stack[i]
 	}
 
 	return first_value_stack[0]

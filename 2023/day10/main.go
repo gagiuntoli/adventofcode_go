@@ -14,9 +14,9 @@ type Coordinate struct {
 }
 
 const (
-	Up = 0
-	Down = 1
-	Left = 2
+	Up    = 0
+	Down  = 1
+	Left  = 2
 	Right = 3
 )
 
@@ -34,7 +34,7 @@ func find_S(map_ []string) (int, int) {
 func find_next_position(map_ []string, visited map[Coordinate]bool, i, j int) (int, int, int) {
 	type Movement struct {
 		Coordinate
-		Direction int
+		Direction           int
 		PossibleConnections []byte
 	}
 
@@ -74,7 +74,7 @@ func find_next_position(map_ []string, visited map[Coordinate]bool, i, j int) (i
 		{Coordinate{i, j + 1}, Right, []byte{'-', '7', 'J', 'S'}},
 		{Coordinate{i, j - 1}, Left, []byte{'-', 'L', 'F', 'S'}},
 	}
-	
+
 	var movements []Movement
 
 	if map_[i][j] == 'J' {
@@ -97,7 +97,7 @@ func find_next_position(map_ []string, visited map[Coordinate]bool, i, j int) (i
 		coordinate := movement.Coordinate
 		in := coordinate.i
 		jn := coordinate.j
-		
+
 		if in >= 0 && in < len(map_) && jn >= 0 && jn < len(map_[0]) && !visited[Coordinate{in, jn}] {
 			if slices.Contains(movement.PossibleConnections, map_[in][jn]) {
 				return in, jn, movement.Direction
@@ -126,7 +126,7 @@ func mark_direction(map_ []string, i, j int, directionMap map[Coordinate][4]int,
 		for k := j - 1; k >= 0; k-- {
 			arr := directionMap[Coordinate{i, k}]
 			arr[Up]--
-		directionMap[Coordinate{i, k}] = arr
+			directionMap[Coordinate{i, k}] = arr
 			if map_[i][k] != '.' {
 				break
 			}
@@ -134,7 +134,7 @@ func mark_direction(map_ []string, i, j int, directionMap map[Coordinate][4]int,
 		for k := j + 1; k < width; k++ {
 			arr := directionMap[Coordinate{i, k}]
 			arr[Up]++
-		directionMap[Coordinate{i, k}] = arr
+			directionMap[Coordinate{i, k}] = arr
 			if map_[i][k] != '.' {
 				break
 			}
@@ -143,7 +143,7 @@ func mark_direction(map_ []string, i, j int, directionMap map[Coordinate][4]int,
 		for k := j - 1; k >= 0; k-- {
 			arr := directionMap[Coordinate{i, k}]
 			arr[Down]++
-		directionMap[Coordinate{i, k}] = arr
+			directionMap[Coordinate{i, k}] = arr
 			if map_[i][k] != '.' {
 				break
 			}
@@ -151,7 +151,7 @@ func mark_direction(map_ []string, i, j int, directionMap map[Coordinate][4]int,
 		for k := j + 1; k < width; k++ {
 			arr := directionMap[Coordinate{i, k}]
 			arr[Down]--
-		directionMap[Coordinate{i, k}] = arr
+			directionMap[Coordinate{i, k}] = arr
 			if map_[i][k] != '.' {
 				break
 			}
@@ -160,7 +160,7 @@ func mark_direction(map_ []string, i, j int, directionMap map[Coordinate][4]int,
 		for k := i + 1; k < height; k++ {
 			arr := directionMap[Coordinate{k, j}]
 			arr[Right]++
-		directionMap[Coordinate{k, j}] = arr
+			directionMap[Coordinate{k, j}] = arr
 			if map_[k][j] != '.' {
 				break
 			}
@@ -168,7 +168,7 @@ func mark_direction(map_ []string, i, j int, directionMap map[Coordinate][4]int,
 		for k := i - 1; k >= 0; k-- {
 			arr := directionMap[Coordinate{k, j}]
 			arr[Right]--
-		directionMap[Coordinate{k, j}] = arr
+			directionMap[Coordinate{k, j}] = arr
 			if map_[k][j] != '.' {
 				break
 			}
@@ -177,7 +177,7 @@ func mark_direction(map_ []string, i, j int, directionMap map[Coordinate][4]int,
 		for k := i + 1; k < height; k++ {
 			arr := directionMap[Coordinate{k, j}]
 			arr[Left]--
-		directionMap[Coordinate{k, j}] = arr
+			directionMap[Coordinate{k, j}] = arr
 			if map_[k][j] != '.' {
 				break
 			}
@@ -185,7 +185,7 @@ func mark_direction(map_ []string, i, j int, directionMap map[Coordinate][4]int,
 		for k := i - 1; k >= 0; k-- {
 			arr := directionMap[Coordinate{k, j}]
 			arr[Left]++
-		directionMap[Coordinate{k, j}] = arr
+			directionMap[Coordinate{k, j}] = arr
 			if map_[k][j] != '.' {
 				break
 			}
@@ -254,10 +254,10 @@ func main() {
 
 	clockwise := 0
 	anticlockwise := 0
-	for i := range(map_) {
-		for j := range(map_[0]) {
+	for i := range map_ {
+		for j := range map_[0] {
 			if clean_map[i][j] == '.' {
-				arr := directionMap[Coordinate{i,j}]
+				arr := directionMap[Coordinate{i, j}]
 				if utils.AllEqual(arr[:]) {
 					if arr[0] > 0 {
 						clockwise += 1

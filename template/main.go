@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
 	//utils "github.com/gagiuntoli/adventofcode_go/utils"
 )
 
