@@ -51,7 +51,7 @@ func ArraySum(arr []int) int {
 	return sum
 }
 
-func All(array []int, value int) bool {
+func All[T int | bool](array []T, value T) bool {
 	for _, val := range array {
 		if val != value {
 			return false
