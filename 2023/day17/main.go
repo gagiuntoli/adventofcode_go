@@ -25,10 +25,6 @@ type State struct {
 	count int
 }
 
-type Vertex struct {
-	i, j int
-}
-
 type Item struct {
    state    State
    priority int    
@@ -122,11 +118,7 @@ func minimal_heat_loss(m [][]int, min_movs, max_movs int) int {
 			move_cost := 1
 			if dir == dc {
 				move_cost += cc
-			} else {
-				if cc < min_movs {
-					continue
-				}
-			}
+			} 
 
 			heat := heat_map[current]
 
@@ -138,15 +130,16 @@ func minimal_heat_loss(m [][]int, min_movs, max_movs int) int {
 				if in < 0 || jn < 0 || in >= len(m) || jn >= len(m[0]) {
 					break
 				}
+				if dir != dc && cc < min_movs {
+					continue
+				}
 				heat += m[in][jn]
 
 				state := State{in, jn, dir, move_cost}
 
-				if heat_map[state] == 0 {
-					if heat_map[state] == 0 || heat < heat_map[state] {
-						heat_map[state] = heat
-						heap.Push(&queue, Item{state: state, priority: heat_map[state]})
-					}
+				if heat_map[state] == 0 || heat < heat_map[state] {
+					heat_map[state] = heat
+					heap.Push(&queue, Item{state: state, priority: heat})
 				}
 
 				i = in
