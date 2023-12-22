@@ -60,6 +60,14 @@ func All[T int | bool](array []T, value T) bool {
 	return true
 }
 
+func Abs[T int](a T) T {
+	if a > 0 {
+		return a
+	} else {
+		return -a
+	}
+}
+
 // captureStdout calls a function f and returns its stdout side-effect as string
 func CaptureStdout(f func()) string {
 	// return to original state afterwards
