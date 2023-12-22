@@ -1,11 +1,11 @@
 package main
 
 import (
+	"container/heap"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
-	"container/heap"
 )
 
 type Direction uint8
@@ -17,18 +17,16 @@ const (
 	Right = 4
 )
 
-var AllDirs = []Direction{Up, Down, Left, Right}
-
 type State struct {
-	i, j int
-	dir Direction
+	i, j  int
+	dir   Direction
 	count int
 }
 
 type Item struct {
-   state    State
-   priority int    
-   index    int   
+	state    State
+	priority int
+	index    int
 }
 
 type PriorityQueue []Item
@@ -69,7 +67,7 @@ func (piq *PriorityQueue) Update(item *Item, state State, priority int) {
 	heap.Fix(piq, item.index)
 }
 
-func get_next_coord(i, j int, dir Direction) (int,int) {
+func get_next_coord(i, j int, dir Direction) (int, int) {
 	if dir == Up {
 		return i - 1, j
 	} else if dir == Down {
@@ -83,8 +81,9 @@ func get_next_coord(i, j int, dir Direction) (int,int) {
 }
 
 func get_min_heat(heat_map map[State]int, i, j int, m [][]int, min_movs, max_movs int) int {
+	all_dirs := []Direction{Up, Down, Left, Right}
 	min_heat := 10000000
-	for _, dir := range AllDirs {
+	for _, dir := range all_dirs {
 		for movs := min_movs; movs <= max_movs; movs++ {
 			if heat_map[State{i, j, dir, movs}] != 0 {
 				min_heat = min(min_heat, heat_map[State{i, j, dir, movs}])
@@ -93,7 +92,6 @@ func get_min_heat(heat_map map[State]int, i, j int, m [][]int, min_movs, max_mov
 	}
 	return min_heat
 }
-
 
 func minimal_heat_loss(m [][]int, min_movs, max_movs int) int {
 	heat_map := make(map[State]int)
@@ -114,37 +112,46 @@ func minimal_heat_loss(m [][]int, min_movs, max_movs int) int {
 		dc := current.dir
 		cc := current.count
 
-		for _, dir := range AllDirs {
+		var check_dirs []Direction
+		if dc == Left || dc == Right {
+			check_dirs = append(check_dirs, Up, Down, dc)
+		} else {
+			check_dirs = append(check_dirs, Left, Right, dc)
+		}
+
+		for _, dir := range check_dirs {
 			move_cost := 1
 			if dir == dc {
 				move_cost += cc
-			} 
+			}
+
+			if move_cost > max_movs {
+				continue
+			}
 
 			heat := heat_map[current]
 
 			i := current.i
 			j := current.j
 
-			for ; move_cost <= max_movs; move_cost++ {
-				in, jn := get_next_coord(i, j, dir)
-				if in < 0 || jn < 0 || in >= len(m) || jn >= len(m[0]) {
-					break
-				}
-				if dir != dc && cc < min_movs {
-					continue
-				}
-				heat += m[in][jn]
-
-				state := State{in, jn, dir, move_cost}
-
-				if heat_map[state] == 0 || heat < heat_map[state] {
-					heat_map[state] = heat
-					heap.Push(&queue, Item{state: state, priority: heat})
-				}
-
-				i = in
-				j = jn
+			in, jn := get_next_coord(i, j, dir)
+			if in < 0 || jn < 0 || in >= len(m) || jn >= len(m[0]) {
+				continue
 			}
+			if dir != dc && cc < min_movs {
+				continue
+			}
+			heat += m[in][jn]
+
+			state := State{in, jn, dir, move_cost}
+
+			if heat_map[state] == 0 || heat < heat_map[state] {
+				heat_map[state] = heat
+				heap.Push(&queue, Item{state: state, priority: heat})
+			}
+
+			i = in
+			j = jn
 		}
 
 	}
