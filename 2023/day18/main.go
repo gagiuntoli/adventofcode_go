@@ -5,23 +5,22 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
-//	"github.com/gagiuntoli/adventofcode_go/utils"
+	//	"github.com/gagiuntoli/adventofcode_go/utils"
 )
 
 type Instruction struct {
-	dir Direction
-	dist int
+	dir   Direction
+	dist  int
 	color string
 }
 
 type Direction uint8
 
 const (
-	R = 0
-	D = 1
-	L = 2
-	U = 3
+	R    = 0
+	D    = 1
+	L    = 2
+	U    = 3
 	None = 4
 )
 
@@ -58,12 +57,12 @@ type Point struct {
 func area(points []Point) int {
 	area := 0
 	points = append(points, points[0])
-	for i := 0; i < len(points) - 1; i++ {
+	for i := 0; i < len(points)-1; i++ {
 		y1 := points[i].i
 		x1 := points[i].j
 		y2 := points[i+1].i
 		x2 := points[i+1].j
-		area += x1 * y2 - y1 * x2
+		area += x1*y2 - y1*x2
 	}
 	return area / 2
 }
@@ -91,15 +90,15 @@ func main() {
 	P2 := 0
 
 	for _, word := range words {
-		points1 = append(points1, Point{i2,j2})
-		points2 = append(points2, Point{i1,j1})
+		points1 = append(points1, Point{i2, j2})
+		points2 = append(points2, Point{i1, j1})
 
 		word_s := strings.Split(word, " ")
 		dir := word_s[0]
 		dist, _ := strconv.Atoi(word_s[1])
 		color := word_s[2]
 		dist2, _ := strconv.ParseInt(color[2:len(color)-2], 16, 32)
-		dir2, _ := strconv.Atoi(color[len(color)-2:len(color)-1])
+		dir2, _ := strconv.Atoi(color[len(color)-2 : len(color)-1])
 
 		P1 += dist
 		P2 += int(dist2)
@@ -108,11 +107,11 @@ func main() {
 	}
 
 	A1 := area(points1)
-	I1 := A1 + 1 - P1 / 2
+	I1 := A1 + 1 - P1/2
 	solution1 := I1 + P1
 
 	A2 := area(points2)
-	I2 := A2 + 1 - P2 / 2
+	I2 := A2 + 1 - P2/2
 	solution2 := I2 + P2
 
 	fmt.Println("solution 1:", solution1)
