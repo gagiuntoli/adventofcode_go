@@ -12,10 +12,10 @@ type Part struct {
 }
 
 type Rule struct {
-	part string
+	part     string
 	relation string
-	value int
-	result string
+	value    int
+	result   string
 }
 
 func part_sum(p Part) int {
@@ -94,18 +94,18 @@ func split_range(rule Rule, range_ Range) (Range, Range) {
 	r := rule.relation
 	if r == ">" {
 		if b <= v {
-			return Range{-1, -1}, Range{a , b}
+			return Range{-1, -1}, Range{a, b}
 		} else if a > v {
 			return Range{a, b}, Range{-1, -1}
 		}
-		return Range{v+1, b}, Range{a , v}
+		return Range{v + 1, b}, Range{a, v}
 	} else if r == "<" {
 		if b < v {
 			return Range{a, b}, Range{-1, -1}
 		} else if a >= v {
 			return Range{-1, -1}, Range{a, b}
 		}
-		return Range{a, v-1}, Range{v , b}
+		return Range{a, v - 1}, Range{v, b}
 	}
 	panic("the code should not have reach this point")
 }

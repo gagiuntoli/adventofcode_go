@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/gagiuntoli/adventofcode_go/utils"
 )
 
 type Direction struct {
@@ -34,27 +36,6 @@ func apply_step(directions map[string]Direction, step byte, start string) string
 		err := fmt.Errorf("Instruction not recognized %b", step)
 		panic(err)
 	}
-}
-
-// greatest common divisor (GCD) via Euclidean algorithm
-func GCD(a, b uint64) uint64 {
-	for b != 0 {
-		t := b
-		b = a % b
-		a = t
-	}
-	return a
-}
-
-// greatest common divisor (GCD) via Euclidean algorithm
-func LCM(numbers []uint64) uint64 {
-	a := numbers[0]
-	b := numbers[1]
-	result := a * b / GCD(a, b)
-	for i := 2; i < len(numbers); i++ {
-		result = result * numbers[i] / GCD(result, numbers[i])
-	}
-	return result
 }
 
 func main() {
@@ -139,7 +120,7 @@ func main() {
 		}
 	}
 
-	solution2 := LCM(checkpoint_distances)
+	solution2 := utils.LCM(checkpoint_distances)
 
 	fmt.Println("solution 1:", solution1)
 	fmt.Println("solution 2:", solution2)

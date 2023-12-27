@@ -68,6 +68,27 @@ func Abs[T int](a T) T {
 	}
 }
 
+// greatest common divisor (GCD) via Euclidean algorithm
+func GCD[T uint64 | int](a, b T) T {
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
+}
+
+// greatest common divisor (GCD) via Euclidean algorithm
+func LCM[T uint64 | int](numbers []T) T {
+	a := numbers[0]
+	b := numbers[1]
+	result := a * b / GCD(a, b)
+	for i := 2; i < len(numbers); i++ {
+		result = result * numbers[i] / GCD(result, numbers[i])
+	}
+	return result
+}
+
 // captureStdout calls a function f and returns its stdout side-effect as string
 func CaptureStdout(f func()) string {
 	// return to original state afterwards
