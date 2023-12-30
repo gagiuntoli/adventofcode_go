@@ -7,23 +7,8 @@ import (
 	"strings"
 )
 
-type Direction uint8
-
-const (
-	Up    = 1
-	Down  = 2
-	Left  = 3
-	Right = 4
-)
-
 type Vertex struct {
 	i, j int
-}
-
-type Item struct {
-	vertex   Vertex
-	priority int
-	index    int
 }
 
 func get_next_nodes(grid []string, vertex Vertex) []Vertex {
@@ -51,26 +36,29 @@ func get_next_nodes(grid []string, vertex Vertex) []Vertex {
 	return nodes
 }
 
-func max_distance(grid []string, visited map[Vertex]bool, from, to Vertex) int {
-	visited[from] = true
+func is_node(grid []string, vertex Vertex) bool {
+	i := vertex.i
+	j := vertex.j
 
-	if from == to {
-		return 0
+	count := 0
+	//down
+	if i < len(grid)-1 && grid[i+1][j] != '#' {
+		count++
+	}
+	//right
+	if j < len(grid[0])-1 && grid[i][j+1] != '#' {
+		count++
+	}
+	//up
+	if i > 0 && grid[i-1][j] != '#' {
+		count++
+	}
+	//left
+	if j > 0 && grid[i][j-1] != '#' {
+		count++
 	}
 
-	nodes := get_next_nodes(grid, from)
-
-	dist := 0
-	for _, node := range nodes {
-		if !visited[node] {
-			new_visited := make(map[Vertex]bool)
-			for k, v := range visited {
-				new_visited[k] = v
-			}
-			dist = max(dist, max_distance(grid, new_visited, node, to)+1)
-		}
-	}
-	return dist
+	return count > 2
 }
 
 func max_distance_graph(connections map[Vertex][]Vertex, distances map[[2]Vertex]int, visited map[Vertex]bool, from, to Vertex) (int, bool) {
@@ -112,14 +100,16 @@ func BFS(grid []string, v Vertex, nodes []Vertex, visited map[Vertex]bool) (Vert
 
 		adjs := get_next_nodes(grid, current)
 
-		if len(adjs) == 0 && len(adjs) > 2 {
-			panic("adjs should be <= 2 and > 0")
+		found := false
+		for _, adj := range adjs {
+			if !visited[adj] {
+				current = adj
+				found = true
+				break
+			}
 		}
-
-		if !visited[adjs[0]] {
-			current = adjs[0]
-		} else if !visited[adjs[1]] {
-			current = adjs[1]
+		if !found {
+			return Vertex{0, 0}, -1
 		}
 
 		distance++
@@ -138,8 +128,10 @@ func get_connections_and_distances(grid []string, nodes []Vertex, node Vertex) (
 		visited := make(map[Vertex]bool)
 		visited[node] = true
 		next_node, distance := BFS(grid, v, nodes, visited)
-		connections = append(connections, next_node)
-		distances = append(distances, distance)
+		if distance > 0 {
+			connections = append(connections, next_node)
+			distances = append(distances, distance)
+		}
 	}
 
 	return connections, distances
@@ -152,7 +144,6 @@ func compute_graph(grid []string, start, end Vertex) (map[Vertex][]Vertex, map[[
 
 	//----------------
 	// Search for nodes
-
 	for len(queue) > 0 {
 
 		current := queue[0]
@@ -161,8 +152,7 @@ func compute_graph(grid []string, start, end Vertex) (map[Vertex][]Vertex, map[[
 
 		adjs := get_next_nodes(grid, current)
 
-		if len(adjs) > 2 {
-			// it is a node
+		if is_node(grid, current) {
 			nodes = append(nodes, current)
 		}
 
@@ -175,24 +165,8 @@ func compute_graph(grid []string, start, end Vertex) (map[Vertex][]Vertex, map[[
 
 	nodes = append(nodes, end)
 
-	new_grid := []string{}
-	for _, row := range grid {
-		new_grid = append(new_grid, row)
-	}
-	for _, n := range nodes {
-		i := n.i
-		j := n.j
-		new_grid[i] = new_grid[i][:j] + "O" + new_grid[i][j+1:]
-	}
-
-	// fmt.Println("NODES:")
-	// for _, row := range new_grid {
-	// 	fmt.Println(row)
-	// }
-	// fmt.Println()
-
 	//----------------
-
+	// Check connections
 	distanceMap := make(map[[2]Vertex]int)     // distance from i to j
 	connectionMap := make(map[Vertex][]Vertex) // i connections
 	for _, node := range nodes {
@@ -205,13 +179,6 @@ func compute_graph(grid []string, start, end Vertex) (map[Vertex][]Vertex, map[[
 			distanceMap[[2]Vertex{connections[i], node}] = distances[i]
 		}
 	}
-
-	//for k, d := range distanceMap {
-	//	fmt.Printf("distance %+v -> %+v\n", k, d)
-	//}
-	//for k, d := range connectionMap {
-	//	fmt.Printf("%+2v -> %+2v\n", k, d)
-	//}
 
 	return connectionMap, distanceMap
 }
@@ -228,10 +195,12 @@ func main() {
 
 	grid := strings.Split(strings.Trim(string(dat), "\n"), "\n")
 
-	visited := make(map[Vertex]bool)
 	start := Vertex{0, 1}
 	end := Vertex{len(grid) - 1, len(grid[0]) - 2}
-	solution1 := max_distance(grid, visited, start, end)
+	connections, distances := compute_graph(grid, start, end)
+
+	visited := make(map[Vertex]bool)
+	solution1, _ := max_distance_graph(connections, distances, visited, start, end)
 
 	new_grid := []string{}
 	for _, row := range grid {
@@ -243,7 +212,7 @@ func main() {
 		new_grid = append(new_grid, row)
 	}
 
-	connections, distances := compute_graph(new_grid, start, end)
+	connections, distances = compute_graph(new_grid, start, end)
 
 	visited = make(map[Vertex]bool)
 	solution2, _ := max_distance_graph(connections, distances, visited, start, end)
