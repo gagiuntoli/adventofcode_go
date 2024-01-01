@@ -12,7 +12,7 @@ func count_nodes(connections map[string][]string, visited map[string]bool, start
 	count := 1
 	for _, c := range connections[start] {
 		if !visited[c] {
-			count += count_nodes(connections, visited, c)	
+			count += count_nodes(connections, visited, c)
 		}
 	}
 	return count
@@ -49,7 +49,7 @@ func main() {
 	for k := range connections {
 		keys = append(keys, k)
 	}
-	
+
 	for _, node := range keys {
 		for _, c := range connections[node] {
 			conns := connections[c]
@@ -59,7 +59,7 @@ func main() {
 			connections[c] = conns
 		}
 	}
-	
+
 	keys = []string{}
 	for k := range connections {
 		keys = append(keys, k)
