@@ -5,10 +5,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
 	
 	"gonum.org/v1/gonum/mat"
-	//utils "github.com/gagiuntoli/adventofcode_go/utils"
 )
 
 type Particle struct {
@@ -17,8 +15,8 @@ type Particle struct {
 }
 
 func xy_intersection(p1, p2 Particle) (float64, float64, error) {
-	x1, y1, z1, vx1, vy1, vz1 := p1.x, p1.y, p1.z, p1.vx, p1.vy, p1.vz
-	x2, y2, z2, vx2, vy2, vz2 := p2.x, p2.y, p2.z, p2.vx, p2.vy, p2.vz
+	x1, y1, vx1, vy1 := p1.x, p1.y, p1.vx, p1.vy
+	x2, y2, vx2, vy2 := p2.x, p2.y, p2.vx, p2.vy
 
 	det := -vx1 * vy2 + vy1 * vx2
 	if det == 0 {
@@ -27,10 +25,6 @@ func xy_intersection(p1, p2 Particle) (float64, float64, error) {
 
 	det_t := (x1 - x2) * vy2 - (y1 - y2) * vx2
 	det_s := -vx1 * (y1 - y2) + vy1 * (x1 - x2)
-
-	det_sz := -vx1 * (z1 - z2) + vz1 * (x1 - x2)
-	det_tz := (x1 - x2) * vz2 - (z1 - z2) * vx2
-	detz := -vx1 * vz2 + vz1 * vx2
 
 	t := float64(det_t) / float64(det)
 	s := float64(det_s) / float64(det)
@@ -41,60 +35,47 @@ func xy_intersection(p1, p2 Particle) (float64, float64, error) {
 	if t < 0 || s < 0 {
 		return 0.0, 0.0, fmt.Errorf("they crossed in the past")
 	}
-	fmt.Println("dets", det_t, det_s, det, "dets z", det_tz, det_sz, detz)
 
 	return xt, yt, nil
 }
 
-func newton_raphson(p1, p2, p3 Particle, max_iters int) (uint64, float64) {
+func intersection(p1, p2, p3 Particle) uint64 {
 	x1, y1, z1, vx1, vy1, vz1 := float64(p1.x), float64(p1.y), float64(p1.z), float64(p1.vx), float64(p1.vy), float64(p1.vz)
 	x2, y2, z2, vx2, vy2, vz2 := float64(p2.x), float64(p2.y), float64(p2.z), float64(p2.vx), float64(p2.vy), float64(p2.vz)
 	x3, y3, z3, vx3, vy3, vz3 := float64(p3.x), float64(p3.y), float64(p3.z), float64(p3.vx), float64(p3.vy), float64(p3.vz)
 
-	x := mat.NewVecDense(9, []float64{0,0,0,0,0,0,0,0,0})
 
-	var result uint64
-	var norm float64
-	for iter := 0; iter < max_iters; iter++ {
-		xk, yk, zk, vxk, vyk, vzk, t1, t2, t3 := x.AtVec(0), x.AtVec(1), x.AtVec(2), x.AtVec(3), x.AtVec(4), x.AtVec(5), x.AtVec(6), x.AtVec(7), x.AtVec(8)
+	// (rk - r1) + (vk - r1) * t = 0
+	// (rk - r1) x (vk - r1) = 0 (cross product on both sides)
+	// (rk - r2) x (vk - r2) = 0 (cross product on both sides)
+	// 
+	// (v2 - v1) x rk + (r2 - r1) x vk = r2 x v2 - r1 x v1 (substract both)
+	// (v3 - v1) x rk + (r3 - r1) x vk = r3 x v3 - r1 x v1 (substract both)
+	// 
+	rhs := mat.NewVecDense(6, []float64{
+		(y2 * vz2 - vy2 * z2)  - (y1 * vz1 - vy1 * z1),
+	       -(x2 * vz2 - vx2 * z2)  + (x1 * vz1 - vx1 * z1),
+		(x2 * vy2 - vx2 * y2)  - (x1 * vy1 - vx1 * y1),
+		(y3 * vz3 - vy3 * z3)  - (y1 * vz1 - vy1 * z1),
+	       -(x3 * vz3 - vx3 * z3)  + (x1 * vz1 - vx1 * z1),
+		(x3 * vy3 - vx3 * y3)  - (x1 * vy1 - vx1 * y1),
+	})
 
-		b := mat.NewVecDense(9, []float64{
-			(xk - x1) + (vxk - vx1) * t1,
-			(yk - y1) + (vyk - vy1) * t1,
-			(zk - z1) + (vzk - vz1) * t1,
-			(xk - x2) + (vxk - vx2) * t2,
-			(yk - y2) + (vyk - vy2) * t2,
-			(zk - z2) + (vzk - vz2) * t2,
-			(xk - x3) + (vxk - vx3) * t3,
-			(yk - y3) + (vyk - vy3) * t3,
-			(zk - z3) + (vzk - vz3) * t3,
-		})
 
-		norm = b.Norm(1)
-		fmt.Println("norm", norm)
+	A := mat.NewDense(6, 6, []float64{
+		           0,   (vz2 - vz1), -(vy2 - vy1),          0,  (z2 - z1), -(y2 - y1),
+		-(vz2 - vz1),             0,  (vx2 - vx1), -(z2 - z1),          0,  (x2 - x1),
+		 (vy2 - vy1),  -(vx2 - vx1),            0,  (y2 - y1), -(x2 - x1),          0,
+		           0,   (vz3 - vz1), -(vy3 - vy1),          0,  (z3 - z1), -(y3 - y1),
+		-(vz3 - vz1),             0,  (vx3 - vx1), -(z3 - z1),          0,  (x3 - x1),
+		 (vy3 - vy1),  -(vx3 - vx1),            0,  (y3 - y1), -(x3 - x1),          0,
+	})
 
-		A := mat.NewDense(9, 9, []float64{
-			1, 0, 0, t1,  0,  0, (vxk - vx1),           0,           0,
-			0, 1, 0,  0, t1,  0, (vyk - vy1),           0,           0,
-			0, 0, 1,  0,  0, t1, (vzk - vz1),           0,           0,
-			1, 0, 0, t2,  0,  0,           0, (vxk - vx2),           0,
-			0, 1, 0,  0, t2,  0,           0, (vyk - vy2),           0,
-			0, 0, 1,  0,  0, t2,           0, (vzk - vz2),           0,
-			1, 0, 0, t3,  0,  0,           0,           0, (vxk - vx3),
-			0, 1, 0,  0, t3,  0,           0,           0, (vyk - vy3),
-			0, 0, 1,  0,  0, t3,           0,           0, (vzk - vz3),
-		})
+	var x mat.VecDense
+	x.SolveVec(A, rhs);
 
-		var dy mat.VecDense
-		dy.SolveVec(A, b);
-		//fmt.Println("b = ", b)
-		fmt.Println("A = ", A)
-		fmt.Println("solution", dy)
-
-		x.SubVec(x, dy.SliceVec(0, dy.Len()))
-	}
-
-	return result, norm
+	tol := 1.0e-1
+	return uint64(x.AtVec(0) + tol) + uint64(x.AtVec(1) + tol) + uint64(x.AtVec(2) + tol)
 }
 
 func point_in_rectangle(x, y, xmin, xmax, ymin, ymax float64) bool {
@@ -137,7 +118,6 @@ func main() {
 			x, y, err := xy_intersection(particles[i], particles[j])
 
 			if err == nil {
-				//xmin, xmax, ymin, ymax := 7.0, 27.0, 7.0, 27.0
 				xmin, xmax, ymin, ymax := 200000000000000.0, 400000000000000.0, 200000000000000.0, 400000000000000.0
 				are_in_rectangle := point_in_rectangle(x, y, xmin, xmax, ymin, ymax)
 
@@ -148,18 +128,8 @@ func main() {
 		}
 	}
 
-	rock := Particle{24, 13, 10, -3, 1, 2}
-	for i := 0; i < len(particles); i++ {
-		x, y, _ := xy_intersection(particles[i], rock)
-		fmt.Println(i, "Collision at", x, y)
+	solution2 := intersection(particles[0], particles[1], particles[2])
 
-	}
-
-	res, norm := newton_raphson(particles[0], particles[1], particles[2], 10)
-	fmt.Println(res, norm)
-
-
-	solution2 := 0
 	fmt.Println("solution 1:", solution1)
 	fmt.Println("solution 2:", solution2)
 }
